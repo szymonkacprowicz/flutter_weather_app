@@ -31,7 +31,6 @@ class _WeatherHeaderState extends State<WeatherHeader> {
     Placemark place = placemark[0];
     setState(() {
       city = place.locality!;
-      print(placemark);
     });
   }
 

@@ -9,9 +9,10 @@ import 'WeatherHeader.dart';
 import 'WeatherMiddleSection.dart';
 import 'WeatherBottomSection.dart';
 
-import 'lib/WeatherAPI.dart';
+import 'WeatherAPI.dart';
 
 void main() => runApp(MyApp());
+
 final WeatherApi weatherApi = WeatherApi();
 
 class MyApp extends StatefulWidget {
@@ -21,10 +22,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Future<Weather> futureWeather;
+
   @override
   void initState() {
     super.initState();
-    weatherApi.fetchWeather(); // call the fetchWeather method
+    futureWeather = weatherApi.fetchWeather();
   }
 
   @override
@@ -35,13 +37,13 @@ class _MyAppState extends State<MyApp> {
         textTheme:
             GoogleFonts.ptSansTextTheme().apply(bodyColor: Colors.grey[200]),
       ),
-      home: const WeatherApp(),
+      home: WeatherApp(),
     );
   }
 }
 
 class WeatherApp extends StatelessWidget {
-  const WeatherApp({Key? key}) : super(key: key);
+  final futureWeather = weatherApi.fetchWeather();
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +84,25 @@ class WeatherApp extends StatelessWidget {
               indent: 5,
               endIndent: 5,
             ),
-            HorizontalCardContainer(),
+            FutureBuilder<Weather>(
+              future: futureWeather,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final weather = snapshot.data!;
+                  return Column(
+                    children: [
+                      Text('${weather.feelsLike}, ${weather.feelsLike}'),
+                      Text('${weather.feelsLike}°C'),
+                      Text('${weather.temp.toString()}'),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
           ],
         ),
       ),
