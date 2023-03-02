@@ -1,39 +1,70 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/WeatherBottomSection.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:weather_app/model/weather/weather_model.dart';
 import 'WeatherHeader.dart';
 import 'WeatherMiddleSection.dart';
+import 'WeatherBottomSection.dart';
 
-// todo wynieść widgety, przypisac do nich zmienne z danymi
+import 'lib/WeatherAPI.dart';
 
-void main() => runApp(MaterialApp(
+void main() => runApp(MyApp());
+final WeatherApi weatherApi = WeatherApi();
+
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<Weather> futureWeather;
+  @override
+  void initState() {
+    super.initState();
+    weatherApi.fetchWeather(); // call the fetchWeather method
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textTheme:
             GoogleFonts.ptSansTextTheme().apply(bodyColor: Colors.grey[200]),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blueAccent,
-          title: Text("Weather app v1"),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                HSLColor.fromAHSL(1, 214, 0.89, 0.61).toColor(),
-                HSLColor.fromAHSL(1, 214, 0.89, 0.21).toColor()
-              ],
-            ),
+      home: const WeatherApp(),
+    );
+  }
+}
+
+class WeatherApp extends StatelessWidget {
+  const WeatherApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
+        title: const Text("Weather app v1"),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              HSLColor.fromAHSL(1, 214, 0.89, 0.61).toColor(),
+              HSLColor.fromAHSL(1, 214, 0.89, 0.21).toColor()
+            ],
           ),
-          child: Column(children: [
+        ),
+        child: Column(
+          children: [
             WeatherHeader(),
-            Divider(
+            const Divider(
               height: 40,
               thickness: 3,
               color: Color.fromARGB(255, 147, 147, 147),
@@ -41,18 +72,20 @@ void main() => runApp(MaterialApp(
               endIndent: 5,
             ),
             WeatherMiddleSection(),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
-            Divider(
+            const Divider(
               height: 40,
               thickness: 3,
               color: Color.fromARGB(255, 147, 147, 147),
               indent: 5,
               endIndent: 5,
             ),
-            HorizontalCardContainer()
-          ]),
+            HorizontalCardContainer(),
+          ],
         ),
       ),
-    ));
+    );
+  }
+}

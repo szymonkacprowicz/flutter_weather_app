@@ -1,8 +1,44 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class WeatherHeader extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+
+import 'package:get/get.dart';
+import 'package:geolocator/geolocator.dart';
+
+import 'package:weather_app/geolocator/global_controller.dart';
+
+class WeatherHeader extends StatefulWidget {
+  @override
+  State<WeatherHeader> createState() => _WeatherHeaderState();
+}
+
+class _WeatherHeaderState extends State<WeatherHeader> {
+  String city = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getAddress(globalController.getLattitude().value,
+        globalController.getLongtude().value);
+  }
+
+  getAddress(lat, long) async {
+    List<Placemark> placemark =
+        await placemarkFromCoordinates(52.43170037301889, 16.9270623531121);
+    Placemark place = placemark[0];
+    setState(() {
+      city = place.locality!;
+      print(placemark);
+    });
+  }
+
+  // call
+  final GlobalController globalController =
+      Get.put(GlobalController(), permanent: false);
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -15,7 +51,7 @@ class WeatherHeader extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.fromLTRB(10, 20, 0, 0),
                   child: Text(
-                    "Poznań, PL",
+                    "$city",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 34),
                   ),
                 ),
@@ -55,7 +91,7 @@ class WeatherHeader extends StatelessWidget {
                           color: Colors.grey[200]),
                     ),
                     Text(
-                      "Mostly suny",
+                      "Mostly sunny",
                       style: TextStyle(fontSize: 18),
                     ),
                   ],
