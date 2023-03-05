@@ -22,9 +22,9 @@ class GlobalController extends GetxController {
   }
 
   getLocation() async {
-    bool isServiceEnabled;
+    final bool isServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    ;
 
-    isServiceEnabled = await Geolocator.isLocationServiceEnabled();
     // return is service not enabled
     if (!isServiceEnabled) {
       return Future.error("Location is not enabled");

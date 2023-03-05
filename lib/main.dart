@@ -93,7 +93,6 @@ class WeatherApp extends StatelessWidget {
                     children: [
                       Text('${weather.feelsLike}, ${weather.feelsLike}'),
                       Text('${weather.feelsLike}°C'),
-                      Text('${weather.temp.toString()}'),
                     ],
                   );
                 } else if (snapshot.hasError) {
