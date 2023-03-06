@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:get/get.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/model/weather/weather_model.dart';
+import 'WeatherAPI.dart';
 
 import 'package:weather_app/geolocator/global_controller.dart';
 
@@ -68,32 +69,76 @@ class _WeatherHeaderState extends State<WeatherHeader> {
         SizedBox(
           height: 10,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
-                child: Icon(
-                  Icons.sunny,
-                  color: Colors.grey[200],
-                  size: 100,
-                )),
+        Weather_header_current_weather(),
+      ],
+    );
+  }
+}
+
+class Weather_header_current_weather extends StatefulWidget {
+  const Weather_header_current_weather({
+    super.key,
+  });
+
+  @override
+  State<Weather_header_current_weather> createState() =>
+      _Weather_header_current_weatherState();
+}
+
+class _Weather_header_current_weatherState
+    extends State<Weather_header_current_weather> {
+  late Future<Weather> futureWeather;
+
+  final WeatherApi weatherApi = WeatherApi();
+
+  @override
+  void initState() {
+    super.initState();
+    futureWeather = weatherApi.fetchWeather();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Container(
+            padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
+            child: Icon(
+              Icons.sunny,
+              color: Colors.grey[200],
+              size: 100,
+            )),
+        Column(
+          children: <Widget>[
             Column(
-              children: <Widget>[
-                Column(
-                  children: [
-                    Text(
-                      "21°",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 60,
-                          color: Colors.grey[200]),
-                    ),
-                    Text(
-                      "Mostly sunny",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ],
+              children: [
+                FutureBuilder<Weather>(
+                  future: futureWeather,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final weather = snapshot.data!;
+                      return Column(
+                        children: [
+                          Text(
+                            '${weather.description}°C',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 50,
+                                color: Colors.grey[200]),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('${snapshot.error}');
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  },
+                ),
+                Text(
+                  "Mostly sunny",
+                  style: TextStyle(fontSize: 18),
                 ),
               ],
             ),

@@ -84,24 +84,23 @@ class WeatherApp extends StatelessWidget {
               indent: 5,
               endIndent: 5,
             ),
-            FutureBuilder<Weather>(
-              future: futureWeather,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final weather = snapshot.data!;
-                  return Column(
-                    children: [
-                      Text('${weather.feelsLike}, ${weather.feelsLike}'),
-                      Text('${weather.feelsLike}°C'),
-                    ],
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
+            // FutureBuilder<Weather>(
+            //   future: futureWeather,
+            //   builder: (context, snapshot) {
+            //     if (snapshot.hasData) {
+            //       final weather = snapshot.data!;
+            //       return Column(
+            //         children: [
+            //           Text('${weather.description}°C'),
+            //         ],
+            //       );
+            //     } else if (snapshot.hasError) {
+            //       return Text('${snapshot.error}');
+            //     } else {
+            //       return CircularProgressIndicator();
+            //     }
+            //   },
+            // ),
           ],
         ),
       ),

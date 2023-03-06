@@ -1,42 +1,61 @@
+// class WeatherResponse {
+//   List<Weather> weather;
+//   factory WeatherResponse.fromJson(Map<String, dynamic> json) =>
+//       WeatherResponse(weather: List<Weather>.from(l.map(elements) => Post.fromJson (weatherfrom)) );
+// }
+
+class WeatherResponse {
+  List<Weather> weather;
+
+  WeatherResponse({required this.weather});
+
+  factory WeatherResponse.fromJson(Map<String, dynamic> json) {
+    List<dynamic> weatherList = json['weather'];
+    List<Weather> weather = weatherList
+        .map((weatherJson) => Weather.fromJson(weatherJson))
+        .toList();
+    print('RYCHUUUUUUUUUUUUUU ${weather.length}');
+    return WeatherResponse(weather: weather);
+  }
+}
+
+class Coord {
+  double lat;
+  double lon;
+
+  Coord({
+    required this.lat,
+    required this.lon,
+  });
+
+  factory Coord.fromJson(Map<String, dynamic> json) => Coord(
+        lat: double.tryParse(json['lat'].toString()) ?? 0,
+        lon: double.tryParse(json['lon'].toString()) ?? 0,
+      );
+}
+
 class Weather {
-  double temp;
-  double feelsLike;
-  double tempMin;
-  double tempMax;
-  int pressure;
-  int humidity;
+  int id;
+  String main;
+  String description;
   String icon;
 
-  @override
-  String toString() {
-    return 'Weather{temp: $temp, feelsLike: $feelsLike, tempMin: $tempMin, tempMax: $tempMax, pressure: $pressure, humidity: $humidity, icon: $icon}';
-  }
+  // @override
+  // String toString() {
+  //   return 'Weather{temp: $temp, feelsLike: $feelsLike, tempMin: $tempMin, tempMax: $tempMax, pressure: $pressure, humidity: $humidity, icon: $icon}';
+  // }
 
-  Weather(
-      {required this.temp,
-      required this.feelsLike,
-      required this.tempMin,
-      required this.tempMax,
-      required this.pressure,
-      required this.humidity,
-      required this.icon});
+  Weather({
+    required this.id,
+    required this.main,
+    required this.description,
+    required this.icon,
+  });
 
   factory Weather.fromJson(Map<String, dynamic> json) => Weather(
-        temp: double.tryParse(json['temp'].toString()) ?? 0,
-        feelsLike: double.tryParse(json['feels_like'].toString()) ?? 0,
-        tempMin: double.tryParse(json['temp_min'].toString()) ?? 0,
-        tempMax: double.tryParse(json['temp_max'].toString()) ?? 0,
-        pressure: json['pressure'] as int? ?? 0,
-        humidity: json['humidity'] as int? ?? 0,
+        id: json['id'] as int,
+        main: json['main'] as String,
+        description: json['description'] as String,
         icon: json['icon'] as String,
       );
-
-  Map<String, dynamic> toJson() => {
-        'temp': temp,
-        'feelsLike': feelsLike,
-        'temp_min': tempMin,
-        'temp_max': tempMax,
-        'pressure': pressure,
-        'humidity': humidity
-      };
 }
